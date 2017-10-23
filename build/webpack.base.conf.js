@@ -30,6 +30,14 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.scss$/,
+        loaders: [ 'style', 'css', 'sass' ]
+      },
+      {
+        test: /\.styl$/,
+        loader: ['style-loader', 'css-loader', 'stylus-loader']
+      },
+      {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: 'pre',
