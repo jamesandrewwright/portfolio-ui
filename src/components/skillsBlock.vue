@@ -8,20 +8,24 @@
       </v-flex>
     </v-layout>
 
-    <v-layout row wrap align-center justify-center>
+    <v-layout row wrap justify-space-around class="mb-4">
+      <v-flex xs6 sm2 v-for="cat in uniqueCategories">
+        <div style="text-align: center">
+          <v-checkbox :label="cat" :key="cat"
+                      v-model="visibleCategories"
+                      :color="getSkillColor(cat)"
+                      :value="cat"
+                      hide-details>
+          </v-checkbox>
+        </div>
 
-      <v-flex xs3 v-for="cat in skillCategories">
-            <v-switch
-              v-bind:label="cat"
-              v-model="checkedSkills"
-              v-bind:value="cat">
-            </v-switch>
       </v-flex>
+
     </v-layout>
 
-    <v-layout row wrap justify-center>
+    <v-layout col wrap justify-center>
       <v-flex xs12 sm6 md4 v-for="skill in filteredSkills" :key="skill._id">
-        <skill-summary-card v-bind:skill="skill"></skill-summary-card>
+        <skill-summary-card :skill="skill" class="ma-2"></skill-summary-card>
       </v-flex>
 
     </v-layout>
@@ -33,6 +37,7 @@
 <script>
 
 import PortfolioService from '../services/api/portfolio.service';
+import { SKILL_COLOR_MAP } from '../services/skills/skillColorMapper.service';
 import skillSummaryCard from './skillSummaryCard.vue';
 import _ from 'lodash';
 
@@ -43,25 +48,30 @@ export default {
   name: 'skillsBlock',
   created: function () {
     portfolioService.getSkills().then((skills) => {
-      this.skills = skills;
-      this.skillCategories = _.uniqBy(_.map(this.skills, 'category'));
-      this.checkedSkills = this.skillCategories;
+      this.skills = _.map(skills, (skill) => {
+        skill.color = this.getSkillColor(skill.category);
+        return skill;
+      });
+
+      this.uniqueCategories = _.uniqBy(_.map(this.skills, 'category'));
+      this.visibleCategories = this.uniqueCategories;
     });
   },
   data: function () {
     return {
       skills: [],
-      skillCategories: [],
-      checkedSkills: []
+      uniqueCategories: [],
+      visibleCategories: []
     };
   },
   computed: {
     filteredSkills: function () {
-      if (!this.checkedSkills.length) {
-        return this.skills;
-      }
-
-      return this.skills.filter(j => this.checkedSkills.includes(j.category));
+      return this.skills.filter(j => this.visibleCategories.includes(j.category));
+    }
+  },
+  methods: {
+    getSkillColor: function (skillCat) {
+      return SKILL_COLOR_MAP.get(skillCat);
     }
   }
 };

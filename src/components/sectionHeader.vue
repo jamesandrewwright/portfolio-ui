@@ -1,5 +1,5 @@
 <template>
-  <div class="section-header">
+  <div class="section-header ml-2">
   <h3 class="section-header__title">{{mainTitlePart}}
     <span class="section-header__title-highlight">{{lastWordInTitle}}</span>
   </h3>
@@ -39,7 +39,6 @@
     font-size: 3rem;
     line-height: 3rem;
     color: #4b4e53;
-    margin-left: 2.5rem;
     padding: 22px 25px 24px;
 
     border-left: #4b4e53 2px solid;
